@@ -1,5 +1,12 @@
 # Docker llvm build
 
+Before using this script you need to docker `llvm` image (TODO: provide it).
+
+Ensure you have the image with:
+
+    docker image ls | grep llvm
+    llvm:latest                                                                          35f0d06588a0       6.14GB             0B
+
 In the following `~/work` is just an example dir, use any dir, but both `llvm-project` and `llvm-build`
 must be slibing dirs.
 
