@@ -1,4 +1,4 @@
-FROM quay.io/pypa/manylinux_2_28_x86_64
+FROM quay.io/pypa/manylinux_2_28_x86_64 AS builder
 
 ARG USERID=1000
 ARG GROUPID=1000
@@ -34,17 +34,45 @@ ENV CCACHE_DIR=$HOMEDIR/ccache
 COPY cmake.sh /dockerfiles/
 
 RUN mkdir -p $CCACHE_DIR && \
-          mkdir llvm-project/build && \
-          cd llvm-project/build && \
+          mkdir $HOME/llvm-project/build && \
+          cd $HOME/llvm-project/build && \
           cp /dockerfiles/cmake.sh . && \
           ./cmake.sh -G Ninja  ../llvm && \
-          ninja -j 16
+          ninja -j 26 && \
+          cd $HOME && \
+          rm -rf llvm-project
+
+
+FROM quay.io/pypa/manylinux_2_28_x86_64
+
+ARG USERID=1000
+ARG GROUPID=1000
+ARG HOMEDIR=/home/guest
+
+ENV PATH=/opt/python/cp312-cp312/bin:/usr/share/Modules/bin:/opt/clang/bin:/opt/rh/gcc-toolset-14/root/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+RUN mkdir $HOMEDIR && chown $USERID:$GROUPID $HOMEDIR
+
+WORKDIR $HOMEDIR
+
+COPY install-build-tools.sh /dockerfiles/
+
+RUN /dockerfiles/install-build-tools.sh
+
+USER $USERID:$GROUPID
+
+ENV HOME=/home/guest
+ENV USER=guest
+
+COPY requirements.txt /dockerfiles/
+RUN python3 -m pip install -r /dockerfiles/requirements.txt
 
 USER 0:0
 
-RUN cp -pr $CCACHE_DIR /ccache
+ENV CCACHE_DIR=$HOMEDIR/ccache
+COPY --from=builder $CCACHE_DIR/ /ccache/
 ENV CCACHE_DIR=/ccache
 
-COPY entrypoint.sh /dockerfiles/
+COPY cmake.sh entrypoint.sh /dockerfiles/
 
 ENTRYPOINT ["/dockerfiles/entrypoint.sh"]

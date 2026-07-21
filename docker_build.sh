@@ -3,4 +3,4 @@
 dir="$(dirname "$0")"
 
 cd "$dir"
-exec sudo docker build --progress=plain -t llvm docker/
+exec sudo docker build --progress=plain -t llvm-ccache docker/
