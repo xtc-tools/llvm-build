@@ -1,7 +1,7 @@
 #!/bin/sh
 
 exec cmake \
-     -DLLVM_BUILD_TYPE=Release \
+     -DCMAKE_BUILD_TYPE=Release \
      -DLLVM_ENABLE_PROJECTS="mlir" \
      -DLLVM_CCACHE_BUILD=ON \
      -DLLVM_ENABLE_ASSERTIONS=ON \

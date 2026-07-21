@@ -35,3 +35,15 @@ RUN mkdir -p $CCACHE_DIR && \
           cp /dockerfiles/cmake.sh . && \
           ./cmake.sh -G Ninja  ../llvm && \
           ninja -v
+
+USER 0:0
+
+RUN apt-get update && apt-get install -y gosu
+
+RUN cp -pr $CCACHE_DIR /ccache
+ENV CCACHE_DIR=/ccache
+
+COPY entrypoint.sh /dockerfiles/
+
+ENTRYPOINT ["/dockerfiles/entrypoint.sh"]
+
