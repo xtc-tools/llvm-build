@@ -1,14 +1,14 @@
 # Docker llvm build
 
-Before using this script you need to docker `llvm` image (TODO: provide it).
+This set of scripts allow to build quickly and LLVM/MLIR with python bindings for
+any linux image (glibc >= 2.28) for python 3.12.
 
-Ensure you have the image with:
+Before using these script you need to get docker `llvm-ccache` image:
 
-    docker image ls | grep llvm
-    llvm:latest                                                                          35f0d06588a0       6.14GB             0B
+    docker pull ghcr.io/xtc-tools/llvm-ccache:0.2.0
 
-In the following `~/work` is just an example dir, use any dir, but both `llvm-project` and `llvm-build`
-must be slibing dirs.
+
+In the following `~/work` is just an example dir, use any dir for install `llvm-build`.
 
 Clone LLVM somewhere if not already done, use tag 22.1.8 or own version based on this tag:
 
@@ -21,10 +21,10 @@ Clone this repository also:
     cd ~/work
     git clone https://github.com/xtc-tools/llvm-build
 
-Then for compiling your llvm/mlir project:
+Then for compiling your llvm/mlir project, get to the directory above `llvm-project` (here `~/work`):
 
-     cd ~/work
-     llvm-build/cmake.sh
-     llvm-build/ninja.sh install
+     cd ~/work # must contain your llvm-project sources
+     ~/work/llvm-build/cmake.sh
+     ~/work/llvm-build/ninja.sh install
 
-It will generate and install llvm/mlir in `~/work/llvm-project/build` and `~/work/llvm-project/build`.
+It will generate and install llvm/mlir in `~/work/llvm-project/build` and `~/work/llvm-project/install`.

@@ -3,4 +3,5 @@
 dir="$(dirname "$0")"
 
 cd "$dir"
-exec sudo docker build --progress=plain -t llvm-ccache docker/
+image=ghcr.io/xtc-tools/llvm-ccache:0.2.0
+exec sudo docker build --progress=plain -t "$image" docker/
